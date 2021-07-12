@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="博客 技术 zuoxiong" />
+   
+  <meta name="description" content="个人博客" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    浏览器缓存策略 |  騎豬兜風
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="騎豬兜風" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-浏览器缓存策略" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  浏览器缓存策略
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/" class="article-date">
+  <time datetime="2020-04-05T17:25:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.5k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">5分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>浏览器缓存就是把一个已请求过的 Web 资源拷贝一份副本储存在浏览器中。当下一次请求到来的时候，如果是相同的 URL，缓存会根据缓存机制决定是直接使用副本响应访问请求，还是向源服务器再次发送请求。</p>
+<a id="more"></a>
+
+<h2 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h2><ul>
+<li>新鲜度：含有完整的过期时间控制头信息（HTTP 协议报头），并且仍在有效期内。或浏览器已经使用过这个缓存副本，并且在一个会话中已检查过新鲜度。满足以上两者之一，浏览器会直接从缓存中获取副本并渲染。</li>
+<li>校验值：服务器返回资源的时候有时在控制头信息带上这个资源的实体标签 Etag，可以用来作为浏览器再次请求过程的校验标识。如发现校验标识不匹配，说明资源已经被修改或过期，浏览器需要重新获取资源内容。</li>
+</ul>
+<h2 id="缓存过程"><a href="#缓存过程" class="headerlink" title="缓存过程"></a>缓存过程</h2><h3 id="第一次发起-HTTP-请求"><a href="#第一次发起-HTTP-请求" class="headerlink" title="第一次发起 HTTP 请求"></a>第一次发起 HTTP 请求</h3><p>浏览器与服务器通信的方式为应答模式，那么浏览器第一次向服务器发起请求后拿到请求结果，会根据响应报文中 HTTP 头的缓存标识，决定是否缓存结果。</p>
+<p><img src="http://picbed.wuzuoxiong.top/20210406_firstHttpRequest.png" alt></p>
+<h3 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h3><p>强制缓存就是向浏览器缓存查找请求结果，并根据该结果的缓存规则来决定是否使用该缓存结果的过程，分三种情况：</p>
+<ol>
+<li>不存在该缓存缓存结果和缓存标识，强制缓存失效，直接向服务器发起请求</li>
+<li>存在该缓存结果和缓存标识，但该结果已失效，使用协商缓存</li>
+<li>存在该缓存结果和缓存标识，且该结果尚未失效，强制缓存生效，直接返回该结果</li>
+</ol>
+<p><img src="http://picbed.wuzuoxiong.top/20210406_enforceHttpRequest.png" alt></p>
+<h3 id="强制缓存的缓存规则"><a href="#强制缓存的缓存规则" class="headerlink" title="强制缓存的缓存规则"></a>强制缓存的缓存规则</h3><p>向服务器发起请求时，服务器会在响应报文的 HTTP 头中添加缓存标识，字段分别是 Expires 和 Cache-Control，其中 Cache-Control 优先级比 Expires 高。</p>
+<p><strong>Expires：</strong>HTTP/1.0 的字段，其值为缓存到期时间，即客户端的时间小于 Expires 的值时，直接使用缓存结果。（HTTP/1.1，Expire 已被 Cache-Control 替代，原因是使用客户端的时间与服务端返回的时间做对比易发生误差，那么强制缓存会直接失效）。</p>
+<p><strong>Cache-Control：</strong>主要取值为：</p>
+<ul>
+<li>public：所有内容都将被缓存</li>
+<li>private：所有内容只有客户端可以缓存（默认值）</li>
+<li>no-cache：客户端缓存内容，但是否使用缓存则需要经过协商缓存来验证决定</li>
+<li>no-store：所有内容都不会被缓存，即不适用强制缓存，也不适用协商缓存</li>
+<li>max-age = xxx：缓存内容在 xxx 秒后失效</li>
+</ul>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><p>协商缓存就是强制缓存失效后，浏览器携带缓存标识向服务器发起请求，由服务器根据缓存标识决定是否使用缓存的过程。分为两种情况：</p>
+<ul>
+<li>协商缓存生效，返回 304</li>
+</ul>
+<p><img src="http://picbed.wuzuoxiong.top/20210406_consultHttpRequest1.png" alt></p>
+<ul>
+<li>协商缓存失效，返回 200 和请求结果</li>
+</ul>
+<p><img src="http://picbed.wuzuoxiong.top/20210406_consultHttpRequest2.png" alt></p>
+<p>协商缓存的标识也在响应报文的 HTTP 头中和请求结果一起返回给浏览器，控制协商缓存的字段分别为：<strong>Last-Modified / If-Modified-Since</strong> 和 <strong>Etag / If-None-Match</strong>，其中 Etag/If-None-Match 优先级高。</p>
+<p><strong>Last-Modified / If-Modified-Since：</strong></p>
+<ul>
+<li><p>Last-Modified：该资源文件最后被修改的时间</p>
+</li>
+<li><p>If-Modified-Since：携带 Last-Modified 值，通过此字段告诉服务器该资源上次最后的修改时间。服务器收到请求根据其值与该资源的最后被修改时间比较，若资源的最后修改时间大于 If-Modified-Since 值，则重新返回资源，状态码 200；否则返回 304，代表资源无更新，可继续使用缓存文件。</p>
+</li>
+</ul>
+<p><strong>Etag / If-None-Match：</strong></p>
+<ul>
+<li><p>Etag：返回当前资源文件的一个唯一标识（由服务器生成）</p>
+</li>
+<li><p>If-None-Match：携带 Etag 值，通过此字段告诉服务器该资源上次的唯一标识值。服务器收到该请求后，服务器会根据 If-None-Match 与该资源在服务器的 Etag 值做对比，一致则返回 304，代表资源无更新，继续使用缓存文件；不一致则重新返回资源文件，状态码 200</p>
+</li>
+</ul>
+<h3 id="内存缓存（from-memory-cache）与硬盘缓存（from-disk-cache）"><a href="#内存缓存（from-memory-cache）与硬盘缓存（from-disk-cache）" class="headerlink" title="内存缓存（from memory cache）与硬盘缓存（from disk cache）"></a>内存缓存（from memory cache）与硬盘缓存（from disk cache）</h3><p>在浏览器中，浏览器会在 js 和图片等文件解析执行后直接存入内存缓存中，当刷新页面时直接从内存缓存中读取；而 CSS 文件会存入硬盘文件中，所以每次渲染页面都从硬盘读取缓存。</p>
+<p><strong>内存缓存（from memory cache）：</strong>将解释后的文件，直接存入该进程的内存中，占据该进程一定的内存资源，一旦进程关闭，则该进程的内存则会被清空。</p>
+<p><strong>硬盘缓存（from disk cache）：</strong>将缓存直接写入硬盘文件中，读取缓存需要对该缓存存放的硬盘文件进行 I/O 操作，然后重新解析该缓存内容，读取速度比内存缓存慢。</p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<li>减少网络带宽消耗</li>
+<li>降低服务器压力</li>
+<li>减少网络延迟，加快网页打开速度</li>
+</ol>
+<h2 id="用户行为与缓存"><a href="#用户行为与缓存" class="headerlink" title="用户行为与缓存"></a>用户行为与缓存</h2><p><img src="http://picbed.wuzuoxiong.top/20210406_browerCache.png" alt></p>
+<h2 id="不可缓存的请求"><a href="#不可缓存的请求" class="headerlink" title="不可缓存的请求"></a>不可缓存的请求</h2><ol>
+<li>HTTP 信息头包含 Cache-Control: no-cache, pragma: no-cache(HTTP1.0), Cache: max-age 等告诉浏览器不用缓存的请求</li>
+<li>根据 Cookie，认证信息等决定输入内容 的动态请求是不能被缓存</li>
+<li>经过 HTTPS 安全加密的请求</li>
+<li>POST 请求无法被缓存</li>
+<li>HTTP 响应头中不包含 Last-Modified/Etag, 也不包含 Cache-Control/Expires 的请求无法被缓存</li>
+</ol>
+
+      
+      <!-- 打赏 -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag">浏览器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">面试题</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/04/05/Chrome-%E8%B0%83%E8%AF%95/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Chrome 调试
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/03/27/async-await-%E6%B5%85%E6%9E%90%E4%B8%8E%E5%BA%94%E7%94%A8/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">async / await 浅析与应用</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '2895fdaee3b4ba2bddcf',
+    clientSecret: '7de1b5aa9c9f05924fd8c2e357a1869e7083e561',
+    repo: 'blogComment',
+    owner: 'Hzu-zuoxiong',
+    admin: ['Hzu-zuoxiong'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020-2021
+        Hzu-zuoxiong
+      </li>
+      <li>
+        <a href="//www.wuzuoxiong.top/" target="_blank" rel="noopener">http://www.wuzuoxiong.top</a>
+        &nbsp;
+        <a href="//beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2020094754号</a>
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278591118&amp;web_id=1278591118'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="//picbed.wuzuoxiong.top/blogMeterialPicture/logo/logo1.jpg" alt="騎豬兜風"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/alipay.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/wechat.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      document.getElementById(e.target.innerText).scrollIntoView()
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/koharu.model.json"},"display":{"position":"right","width":180,"height":350},"mobile":{"show":true},"log":false});</script></body>
+
+</html>

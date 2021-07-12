@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="博客 技术 zuoxiong" />
+   
+  <meta name="description" content="个人博客" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    node实现企业微信群机器人定时发送微博热搜 |  騎豬兜風
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="騎豬兜風" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-node实现企业微信群机器人定时发送微博热搜" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  node实现企业微信群机器人定时发送微博热搜
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/02/19/node%E5%AE%9E%E7%8E%B0%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E7%BE%A4%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E5%BE%AE%E5%8D%9A%E7%83%AD%E6%90%9C/" class="article-date">
+  <time datetime="2021-02-19T15:26:00.000Z" itemprop="datePublished">2021-02-19</time>
+</a>
+      
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">862字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">4分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>在日常工(mo)作(yu)时，我们可以利用企业微信群机器人来推送消息，例如推送天气，项目告警等等。本文主要介绍利用企业微信群机器人来定时发送微博热搜。</p>
+<p>项目 Github 地址：<a href="https://github.com/Hzu-zuoxiong/nodeEnterpriseWeChat" target="_blank" rel="noopener">nodeEnterpriseWeChat</a></p>
+<a id="more"></a>
+
+<h2 id="提取微博热搜数据"><a href="#提取微博热搜数据" class="headerlink" title="提取微博热搜数据"></a>提取微博热搜数据</h2><p>通过 superagent 和 cheerio 将微博热搜页面的数据提取出来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> cheerio = <span class="built_in">require</span>(<span class="string">"cheerio"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getHotSearchList</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> weiboURL = <span class="string">'https://s.weibo.com'</span>;</span><br><span class="line">  <span class="keyword">const</span> weiboHotSearch = weiboURL + <span class="string">'/top/summary?cate=realtimehot'</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    superagent.get(weiboHotSearch, (err, res) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) reject(<span class="string">'获取失败'</span>);</span><br><span class="line">      <span class="keyword">let</span> hotList = [];</span><br><span class="line">      <span class="keyword">const</span> $ = cheerio.load(res.text);</span><br><span class="line">      $(<span class="string">"#pl_top_realtimehot table tbody tr"</span>).each(<span class="function"><span class="keyword">function</span> (<span class="params">index</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (index !== <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">const</span> $td = $(<span class="keyword">this</span>).children().eq(<span class="number">1</span>);</span><br><span class="line">          <span class="keyword">const</span> link = weiboURL + $td.find(<span class="string">"a"</span>).attr(<span class="string">"href"</span>);</span><br><span class="line">          <span class="keyword">const</span> text = $td.find(<span class="string">"a"</span>).text();</span><br><span class="line">          <span class="keyword">const</span> hotValue = $td.find(<span class="string">"span"</span>).text();</span><br><span class="line">          <span class="keyword">const</span> icon = $td.find(<span class="string">"img"</span>).attr(<span class="string">"src"</span>)</span><br><span class="line">            ? <span class="string">"https:"</span> + $td.find(<span class="string">"img"</span>).attr(<span class="string">"src"</span>)</span><br><span class="line">            : <span class="string">""</span>;</span><br><span class="line">          hotList.push(&#123;</span><br><span class="line">            index,</span><br><span class="line">            link,</span><br><span class="line">            text,</span><br><span class="line">            hotValue,</span><br><span class="line">            icon,</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      hotList.length ? resolve(hotList) : reject(<span class="string">"errer"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过企业微信数据发送出去"><a href="#通过企业微信数据发送出去" class="headerlink" title="通过企业微信数据发送出去"></a>通过企业微信数据发送出去</h2><p>将微博数据封装成 markdown 字符串，将其发送出去</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">"superagent"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 此处需要填写企业微信群机器人 WebHookURL</span></span><br><span class="line"><span class="keyword">const</span> webHookURL = <span class="string">'[企业微信 WebHookURL]'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">requestfun</span>(<span class="params">msg</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> resData = &#123;</span><br><span class="line">    <span class="string">"msgtype"</span>: <span class="string">"markdown"</span>,</span><br><span class="line">    <span class="string">"markdown"</span>: &#123;</span><br><span class="line">      <span class="string">"content"</span>: msg,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  superagent.post(webHookURL)</span><br><span class="line">    .set(<span class="string">'content-type'</span>, <span class="string">'application/json'</span>)</span><br><span class="line">    .send(<span class="built_in">JSON</span>.stringify(resData))</span><br><span class="line">    .end(<span class="function">(<span class="params">err, res</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'消息发送成功！'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">sendWeiboData</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> data = <span class="keyword">await</span> getHotSearchList();</span><br><span class="line">  <span class="keyword">var</span> sendMsg = <span class="string">'微博热搜榜前十：'</span>;</span><br><span class="line">  <span class="keyword">const</span> topTenArr = data.splice(<span class="number">0</span>, <span class="number">10</span>);</span><br><span class="line">  topTenArr.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    sendMsg += <span class="string">`\n[<span class="subst">$&#123;item.index&#125;</span>. <span class="subst">$&#123;item.text&#125;</span>， 热度：<span class="subst">$&#123;item.hotValue&#125;</span>](<span class="subst">$&#123;item.link&#125;</span>)`</span></span><br><span class="line">  &#125;)</span><br><span class="line">  requestfun(sendMsg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sendWeiboData();</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置定时启动"><a href="#设置定时启动" class="headerlink" title="设置定时启动"></a>设置定时启动</h2><p>使用 node-schedule 将程序设置为每天9点半启动程序，使用自制的 mySetInterval 函数，进行每小时爬取微博数据，到20点时停止爬取。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> schedule = <span class="built_in">require</span>(<span class="string">'node-schedule'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mySetInterval</span>(<span class="params">cb, time</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> timer;</span><br><span class="line">  <span class="keyword">let</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    cb();</span><br><span class="line">    <span class="keyword">const</span> curHours = <span class="keyword">new</span> <span class="built_in">Date</span>().getHours();</span><br><span class="line">    <span class="keyword">if</span> (curHours &gt;= <span class="number">19</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (timer) clearTimeout(timer);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    timer = setTimeout(fn, time)</span><br><span class="line">  &#125;;</span><br><span class="line">  fn();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 工作日每隔一小时爬取微博数据</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getWeiboDataInWorkDay</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> myDate = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">  <span class="keyword">const</span> M = myDate.getMonth() + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">const</span> D = myDate.getDate();</span><br><span class="line">  mySetInterval(sendWeiboData, <span class="number">1000</span> * <span class="number">60</span> * <span class="number">60</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// * * * * * *</span></span><br><span class="line"><span class="comment">// ┬ ┬ ┬ ┬ ┬ ┬</span></span><br><span class="line"><span class="comment">// │ │ │ │ │ |</span></span><br><span class="line"><span class="comment">// │ │ │ │ │ └ day of week (0 - 7) (0 or 7 is Sun)</span></span><br><span class="line"><span class="comment">// │ │ │ │ └───── month (1 - 12)</span></span><br><span class="line"><span class="comment">// │ │ │ └────────── day of month (1 - 31)</span></span><br><span class="line"><span class="comment">// │ │ └─────────────── hour (0 - 23)</span></span><br><span class="line"><span class="comment">// │ └──────────────────── minute (0 - 59)</span></span><br><span class="line"><span class="comment">// └───────────────────────── second (0 - 59, OPTIONAL)</span></span><br><span class="line">schedule.scheduleJob(<span class="string">'0 30 9 * * *'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  getWeiboDataInWorkDay();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="日志记录"><a href="#日志记录" class="headerlink" title="日志记录"></a>日志记录</h2><p>因微博偶尔出现热点新闻导致热搜页面加载不出，进而使得程序报错中断，故而我们需要对其进行错误捕获，将其以日志的形式记录下来。 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统一生成writeStream</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createWriteStream</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> fullFileName = path.join(__dirname, <span class="string">'./'</span>, <span class="string">'log'</span>, fileName)</span><br><span class="line">  <span class="keyword">const</span> writeStream = fs.createWriteStream(fullFileName, &#123;</span><br><span class="line">    flags: <span class="string">'a'</span> <span class="comment">//'a'为追加，'w'为覆盖</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> writeStream</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入日志</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeLog</span>(<span class="params">writeStream, log</span>) </span>&#123;</span><br><span class="line">  writeStream.write(log + <span class="string">'\n'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抓取微博热搜页面，提取热搜数据json</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getHotSearchList</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> weiboURL = <span class="string">'https://s.weibo.com'</span>;</span><br><span class="line">  <span class="keyword">const</span> weiboHotSearch = weiboURL + <span class="string">'/top/summary?cate=realtimehot'</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    superagent.get(weiboHotSearch, (err, res) =&gt; &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> hotList = [];</span><br><span class="line">        <span class="keyword">if</span> (err) <span class="keyword">throw</span> <span class="built_in">Error</span>(err);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 抓取微博热搜代码</span></span><br><span class="line">        </span><br><span class="line">      &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="keyword">const</span> myDate = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">        <span class="keyword">const</span> Y = myDate.getFullYear();</span><br><span class="line">        <span class="keyword">const</span> M = myDate.getMonth() + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">const</span> D = myDate.getDate();</span><br><span class="line">        <span class="keyword">const</span> curDay = Y + <span class="string">'-'</span> + M + <span class="string">'-'</span> + D;</span><br><span class="line">        <span class="keyword">const</span> fileName = curDay + <span class="string">'-'</span> + myDate.getTime() % <span class="number">100000</span>;</span><br><span class="line">        <span class="keyword">const</span> accessWriteStream = createWriteStream(<span class="string">`<span class="subst">$&#123;fileName&#125;</span>.log`</span>);</span><br><span class="line">        writeLog(accessWriteStream, <span class="string">`报错时间：\n<span class="subst">$&#123;curDay + <span class="string">' '</span> + myDate.toTimeString()&#125;</span>`</span>);</span><br><span class="line">        writeLog(accessWriteStream, <span class="string">`微博链接：\n<span class="subst">$&#123;weiboHotSearch&#125;</span>`</span>);</span><br><span class="line">        writeLog(accessWriteStream, <span class="string">`网页内容：\n<span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(res)&#125;</span>`</span>);</span><br><span class="line">        writeLog(accessWriteStream, <span class="string">`报错信息：\n<span class="subst">$&#123;error&#125;</span>`</span>);</span><br><span class="line">        <span class="comment">// 企业微信通知查看报错日志</span></span><br><span class="line">        requestfun(<span class="string">`微博热搜数据爬取失败，请查看报错日志：<span class="subst">$&#123;fileName&#125;</span>.log`</span>);</span><br><span class="line">        <span class="comment">// 一分钟后重新爬取数据</span></span><br><span class="line">        setTimeout(getHotSearchList, <span class="number">1000</span> * <span class="number">60</span> * <span class="number">10</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://work.weixin.qq.com/help?person_id=1&doc_id=13376" target="_blank" rel="noopener">企业微信群机器人官方文档</a></p>
+
+      
+      <!-- 打赏 -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/" rel="tag">node</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2021/02/19/%E5%88%A4%E6%96%AD%E9%93%BE%E8%A1%A8%E6%9C%89%E7%8E%AF/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            判断链表有环
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/01/08/Git-cherry-pick/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Git cherry-pick</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '2895fdaee3b4ba2bddcf',
+    clientSecret: '7de1b5aa9c9f05924fd8c2e357a1869e7083e561',
+    repo: 'blogComment',
+    owner: 'Hzu-zuoxiong',
+    admin: ['Hzu-zuoxiong'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020-2021
+        Hzu-zuoxiong
+      </li>
+      <li>
+        <a href="//www.wuzuoxiong.top/" target="_blank" rel="noopener">http://www.wuzuoxiong.top</a>
+        &nbsp;
+        <a href="//beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2020094754号</a>
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278591118&amp;web_id=1278591118'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="//picbed.wuzuoxiong.top/blogMeterialPicture/logo/logo1.jpg" alt="騎豬兜風"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/alipay.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/wechat.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      document.getElementById(e.target.innerText).scrollIntoView()
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/koharu.model.json"},"display":{"position":"right","width":180,"height":350},"mobile":{"show":true},"log":false});</script></body>
+
+</html>

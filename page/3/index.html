@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="博客 技术 zuoxiong" />
+   
+  <meta name="description" content="个人博客" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     騎豬兜風
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="騎豬兜風" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-MacOS-10-14-SSH连接断开" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/06/29/MacOS-10-14-SSH%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80/"
+    >MacOS 10.14 SSH连接断开</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/06/29/MacOS-10-14-SSH%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80/" class="article-date">
+  <time datetime="2020-06-29T15:24:00.000Z" itemprop="datePublished">2020-06-29</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SSH/">SSH</a> / <a class="article-category-link" href="/categories/SSH/Git/">Git</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>问题：使用 SSH 实现远程 Git 远程连接 GitHub 时，出现连接中断</p>
+      
+      <a class="article-more-link" href="/2020/06/29/MacOS-10-14-SSH%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSH/" rel="tag">SSH</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-weex-加载本地字体、图片" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/08/weex-%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0%E5%AD%97%E4%BD%93%E3%80%81%E5%9B%BE%E7%89%87/"
+    >weex 加载本地字体、图片</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/08/weex-%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0%E5%AD%97%E4%BD%93%E3%80%81%E5%9B%BE%E7%89%87/" class="article-date">
+  <time datetime="2020-04-08T18:06:00.000Z" itemprop="datePublished">2020-04-08</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Weex/">Weex</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="知识概要"><a href="#知识概要" class="headerlink" title="知识概要"></a>知识概要</h2><ol>
+<li><code>Android</code> 或者 <code>iOS</code> 访问本地图片或者字体,在 <code>weex</code> 中统一以 <code>local://</code> 为前缀；</li>
+<li><code>&#39;/&#39;</code> 在 <code>android</code> 下如果加载的是字体对应的就是 <code>assets</code> 目录,若果加载的图片就从 <code>drawable</code> 目录, 所以 <code>iconfont.ttf</code> 放置在 <code>src/assets</code> 目录下的话,字体的 <code>url</code> 加载方式应该为(<code>local:///iconfont.ttf</code>)；</li>
+<li><code>iOS</code> 同理,不过资源文件在 <code>bundle resources</code> 下.(加载方法未测试)</li>
+</ol>
+<p><code>weex</code> 官方参考链接：</p>
+<ul>
+<li><a href="https://weex.apache.org/zh/docs/modules/dom.html#addrule" target="_blank" rel="noopener">dom 加载自定义字体</a></li>
+<li><a href="https://weex.apache.org/zh/guide/advanced/asset-path.html#schemes" target="_blank" rel="noopener">本地资源与远程资源</a></li>
+<li><a href="https://weex.apache.org/zh/guide/advanced/asset-path.html#%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84" target="_blank" rel="noopener">相对路径</a></li>
+</ul>
+      
+      <a class="article-more-link" href="/2020/04/08/weex-%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0%E5%AD%97%E4%BD%93%E3%80%81%E5%9B%BE%E7%89%87/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/weex/" rel="tag">weex</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-HTML5-新特性" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/05/HTML5-%E6%96%B0%E7%89%B9%E6%80%A7/"
+    >HTML5 新特性</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/HTML5-%E6%96%B0%E7%89%B9%E6%80%A7/" class="article-date">
+  <time datetime="2020-04-05T18:23:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a> / <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/JS%E5%9F%BA%E7%A1%80/">JS基础</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p><code>HTML5</code>添加了很多新元素及功能，比如：图形的绘制，多媒体内容，更好的页面结构，更好的形式处理，和几个拖放<code>API</code>，定位，包括页面应用程序缓存，存储，网络工作者等。</p>
+      
+      <a class="article-more-link" href="/2020/04/05/HTML5-%E6%96%B0%E7%89%B9%E6%80%A7/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H5/" rel="tag">H5</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS%E5%9F%BA%E7%A1%80/" rel="tag">JS基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">面试题</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-一行居中，多行左对齐" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/05/%E4%B8%80%E8%A1%8C%E5%B1%85%E4%B8%AD%EF%BC%8C%E5%A4%9A%E8%A1%8C%E5%B7%A6%E5%AF%B9%E9%BD%90/"
+    >一行居中，多行左对齐</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/%E4%B8%80%E8%A1%8C%E5%B1%85%E4%B8%AD%EF%BC%8C%E5%A4%9A%E8%A1%8C%E5%B7%A6%E5%AF%B9%E9%BD%90/" class="article-date">
+  <time datetime="2020-04-05T17:55:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a> / <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/CSS/">CSS</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>想要的效果：</p>
+<p>未知文字长度，当文字长度小于盒子宽度，也就是一行时，文字居中。</p>
+<p>当文字长度大于盒子的宽度，会自动换行，成为多行文字，此时文字左对齐。</p>
+<p>效果如图：</p>
+<p><img src="//picbed.wuzuoxiong.top/20201106_css_style.png" alt></p>
+      
+      <a class="article-more-link" href="/2020/04/05/%E4%B8%80%E8%A1%8C%E5%B1%85%E4%B8%AD%EF%BC%8C%E5%A4%9A%E8%A1%8C%E5%B7%A6%E5%AF%B9%E9%BD%90/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/" rel="tag">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">面试题</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-BFC" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/05/BFC/"
+    >BFC</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/BFC/" class="article-date">
+  <time datetime="2020-04-05T17:54:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CSS/">CSS</a> / <a class="article-category-link" href="/categories/CSS/%E9%9D%A2%E8%AF%95/">面试</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="什么是-BFC"><a href="#什么是-BFC" class="headerlink" title="什么是 BFC"></a>什么是 BFC</h2><p>BFC 全称为 Block Formatting Context，即块格式化上下文。块格式化上下文是页面 CSS 视觉渲染的一部分，用于决定块盒子的布局及浮动相互影响范围的一个区域。</p>
+      
+      <a class="article-more-link" href="/2020/04/05/BFC/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/" rel="tag">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">面试题</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-Chrome-调试" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/05/Chrome-%E8%B0%83%E8%AF%95/"
+    >Chrome 调试</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/Chrome-%E8%B0%83%E8%AF%95/" class="article-date">
+  <time datetime="2020-04-05T17:49:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E5%B7%A7/">技巧</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="一、快捷键和通用技巧"><a href="#一、快捷键和通用技巧" class="headerlink" title="一、快捷键和通用技巧"></a>一、快捷键和通用技巧</h2><h3 id="1、切换-DevTools-窗口的展示布局"><a href="#1、切换-DevTools-窗口的展示布局" class="headerlink" title="1、切换 DevTools 窗口的展示布局"></a>1、切换 <code>DevTools</code> 窗口的展示布局</h3><p>&emsp;&emsp;使用一个快捷键 <code>ctrl + shift + D (⌘ + shift + D Mac)</code> 来实现位置的切换（通常是从 开始的位置 到 右边位置， 但是如果一开始就是右边的位置那么会切换到左边的位置）。</p>
+      
+      <a class="article-more-link" href="/2020/04/05/Chrome-%E8%B0%83%E8%AF%95/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-浏览器缓存策略" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/04/05/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/"
+    >浏览器缓存策略</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/04/05/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/" class="article-date">
+  <time datetime="2020-04-05T17:25:00.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>浏览器缓存就是把一个已请求过的 Web 资源拷贝一份副本储存在浏览器中。当下一次请求到来的时候，如果是相同的 URL，缓存会根据缓存机制决定是直接使用副本响应访问请求，还是向源服务器再次发送请求。</p>
+      
+      <a class="article-more-link" href="/2020/04/05/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag">浏览器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag">面试题</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-async-await-浅析与应用" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/03/27/async-await-%E6%B5%85%E6%9E%90%E4%B8%8E%E5%BA%94%E7%94%A8/"
+    >async / await 浅析与应用</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/03/27/async-await-%E6%B5%85%E6%9E%90%E4%B8%8E%E5%BA%94%E7%94%A8/" class="article-date">
+  <time datetime="2020-03-27T16:19:00.000Z" itemprop="datePublished">2020-03-27</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ES6/">ES6</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="什么是-async-await"><a href="#什么是-async-await" class="headerlink" title="什么是 async / await ?"></a>什么是 async / await ?</h2><p>ES7 引入 async 函数，使得 JavaScript 对异步操作更加方便，也使得异步代码更容易阅读。</p>
+      
+      <a class="article-more-link" href="/2020/03/27/async-await-%E6%B5%85%E6%9E%90%E4%B8%8E%E5%BA%94%E7%94%A8/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    <article id="post-Git-基本用法" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/03/27/Git-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"
+    >Git 基本用法</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/03/27/Git-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/" class="article-date">
+  <time datetime="2020-03-27T15:16:00.000Z" itemprop="datePublished">2020-03-27</time>
+</a>
+      
+      
+      
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="Git-配置"><a href="#Git-配置" class="headerlink" title="Git 配置"></a>Git 配置</h2><p>可以通过 <code>git config -l</code> 查看 Git 的相关配置</p>
+<h2 id="设置-Git-账号名与邮箱"><a href="#设置-Git-账号名与邮箱" class="headerlink" title="设置 Git 账号名与邮箱"></a>设置 <code>Git</code> 账号名与邮箱</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --global为设置全局，不加则设置当前文件的git用户</span></span><br><span class="line">git config --global user.name <span class="string">'hzu_zuoxiong'</span></span><br><span class="line">git config --global user.email <span class="string">'hzu_zuoxiong@qq.com'</span></span><br></pre></td></tr></table></figure>
+      
+      <a class="article-more-link" href="/2020/03/27/Git-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/">Read more</a>
+      
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+  </article>
+  
+
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020-2021
+        Hzu-zuoxiong
+      </li>
+      <li>
+        <a href="//www.wuzuoxiong.top/" target="_blank" rel="noopener">http://www.wuzuoxiong.top</a>
+        &nbsp;
+        <a href="//beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2020094754号</a>
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278591118&amp;web_id=1278591118'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="//picbed.wuzuoxiong.top/blogMeterialPicture/logo/logo1.jpg" alt="騎豬兜風"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/alipay.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="//picbed.wuzuoxiong.top/blogMeterialPicture/wechat.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/koharu.model.json"},"display":{"position":"right","width":180,"height":350},"mobile":{"show":true},"log":false});</script></body>
+
+</html>
